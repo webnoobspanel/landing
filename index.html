@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0F1012">
+  <meta name="description" content="WebNoobs is an open-source billing and provisioning panel for people who run hosting. Self-hosted, no license fee.">
+  <title>WebNoobs — Hosting billing that doesn't bill you</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0F1012;
+      --panel: #151619;
+      --line: #26272c;
+      --paper: #FAFAF7;
+      --ink: #0F1012;
+      --lime: #C5F36B;
+      --red: #E03A3E;
+      --max: 1120px;
+      --display: "Bricolage Grotesque", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--bg); color: #f2f2ee;
+      font-family: var(--display); line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; border-radius: 4px; }
+    .wrap { width: min(var(--max), calc(100% - 48px)); margin-inline: auto; }
+
+    /* header */
+    header { padding: 26px 0; }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+    .brand { font-weight: 800; font-size: 22px; letter-spacing: -.04em; }
+    .brand span { font-family: var(--mono); font-weight: 500; color: var(--yellow); margin-right: 6px; letter-spacing: 0; }
+    .links { display: flex; gap: 26px; font-size: 15px; font-weight: 500; }
+    .links a { opacity: .85; }
+    .links a:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+
+    /* hero */
+    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 64px; align-items: center; padding: 56px 0 120px; }
+    h1 {
+      margin: 0 0 24px; font-size: clamp(46px, 7.2vw, 96px); line-height: .94;
+      letter-spacing: -.045em; font-weight: 800; font-variation-settings: "opsz" 96;
+    }
+    .intro { max-width: 520px; margin: 0; font-size: 19px; line-height: 1.55; color: rgba(255,255,255,.88); }
+    .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 34px; }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 14px 22px; border-radius: 10px; font-weight: 650; font-size: 16px;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .button.primary { background: var(--yellow); color: var(--ink); }
+    .button.primary:hover { transform: translate(-2px, -2px); box-shadow: 3px 3px 0 rgba(197,243,107,.35); }
+    .button.secondary { border: 1.5px solid #3a3b42; }
+    .button.secondary:hover { border-color: #8a8b94; }
+    .status { margin: 18px 0 0; font-size: 14px; color: #7d7e88; }
+
+    /* the receipt */
+    .receipt-wrap { display: flex; justify-content: center; filter: drop-shadow(10px 10px 0 rgba(197,243,107,.2)); }
+    .receipt {
+      width: min(380px, 100%); background: var(--paper); color: var(--ink);
+      font-family: var(--mono); font-size: 13.5px; line-height: 1.6;
+      padding: 30px 26px 46px; transform: rotate(2.2deg);
+      -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+              mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 18px 100%;
+      animation: print 1.4s steps(18, end) .2s both;
+    }
+    @keyframes print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+    .receipt h2 { margin: 0; font: 700 22px/1 var(--display); letter-spacing: -.04em; text-align: center; }
+    .receipt .meta { text-align: center; color: #6b6c78; font-size: 12px; margin: 6px 0 18px; }
+    .rule { border: 0; border-top: 1.5px dashed #b9bac4; margin: 14px 0; }
+    .line { display: flex; align-items: baseline; gap: 8px; }
+    .line .lead { flex: 1; border-bottom: 1.5px dotted #b9bac4; transform: translateY(-3px); }
+    .total { font-weight: 600; font-size: 17px; }
+    .receipt .slogan { margin: 26px 0 4px; text-align: center; font-size: 12.5px; line-height: 2; }
+    .word { display: inline-block; }
+    .word + .word { margin-left: .5ch; }
+    /* One red dot per word, always centered under the first letter: W H M C S. */
+    .first { position: relative; display: inline-block; }
+    .first::after {
+      content: ""; position: absolute; left: 50%; bottom: -3px; width: 4px; height: 4px;
+      border-radius: 50%; background: var(--red); transform: translateX(-50%);
+    }
+    .receipt .thanks { text-align: center; margin: 14px 0 0; color: #6b6c78; font-size: 12px; }
+
+    /* features */
+    .features { background: var(--panel); color: #f2f2ee; padding: 96px 0; border-block: 1px solid var(--line); }
+    .features .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; }
+    .features h2 { margin: 0 0 12px; font-size: 30px; line-height: 1.05; letter-spacing: -.035em; font-weight: 750; }
+    .features p { margin: 0; font-size: 17px; line-height: 1.55; color: #a0a1a8; max-width: 32ch; }
+
+    /* manifesto */
+    .manifesto { background: var(--lime); color: var(--ink); padding: 96px 0; }
+    .manifesto .inner { display: grid; grid-template-columns: 1.3fr 1fr; gap: 64px; align-items: end; }
+    .manifesto h2 { margin: 0; font-size: clamp(36px, 5.6vw, 72px); line-height: .98; letter-spacing: -.045em; font-weight: 800; font-variation-settings: "opsz" 96; }
+    .manifesto p { margin: 0; font-size: 18px; line-height: 1.55; max-width: 38ch; }
+
+    /* footer */
+    footer { background: var(--bg); color: #7d7e88; font-size: 14px; }
+    .footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding: 28px 0; }
+    .footer-brand { color: #fff; font-weight: 800; letter-spacing: -.03em; font-size: 17px; }
+    .disclaimer { font-style: italic; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a:hover { color: #fff; }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; gap: 56px; padding: 32px 0 88px; }
+      .features .grid { grid-template-columns: 1fr; gap: 40px; }
+      .features, .manifesto { padding: 72px 0; }
+      .manifesto .inner { grid-template-columns: 1fr; gap: 28px; }
+    }
+    @media (max-width: 560px) {
+      .wrap { width: calc(100% - 32px); }
+      .links a:not(:last-child) { display: none; }
+      .receipt { transform: rotate(1.2deg); padding-inline: 20px; font-size: 12.5px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .receipt { animation: none; }
+      .button { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="#" aria-label="WebNoobs home"><span>&gt;_</span>webnoobs</a>
+      <nav class="links" aria-label="Main navigation">
+        <a href="#features">What it does</a>
+        <a href="https://github.com/webnoobspanel">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap hero">
+      <div>
+        <h1>Hosting billing that doesn't bill you.</h1>
+        <p class="intro">WebNoobs is an open-source billing and provisioning panel for people who run hosting. You host it yourself, so nobody can raise the price on you.</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/webnoobspanel">View on GitHub</a>
+          <a class="button secondary" href="#features">What it does</a>
+        </div>
+        <p class="status">Still being built.</p>
+      </div>
+
+      <div class="receipt-wrap">
+        <div class="receipt" role="img" aria-label="A receipt from WebNoobs where every line item costs 0.00 euros. At the bottom: Web Hosting Minus Costly Subscriptions. The first letters spell WHMCS.">
+          <h2>webnoobs</h2>
+          <div class="meta">Order #0001 · Billing platform</div>
+          <hr class="rule">
+          <div class="line"><span>Billing &amp; invoicing</span><i class="lead"></i><span>0.00</span></div>
+          <div class="line"><span>Provisioning</span><i class="lead"></i><span>0.00</span></div>
+          <div class="line"><span>Self-hosting</span><i class="lead"></i><span>0.00</span></div>
+          <div class="line"><span>Per-client fees</span><i class="lead"></i><span>0.00</span></div>
+          <div class="line"><span>Surprise price increase</span><i class="lead"></i><span>0.00</span></div>
+          <hr class="rule">
+          <div class="line total"><span>Total</span><i class="lead"></i><span>€ 0.00</span></div>
+          <div class="slogan" aria-hidden="true">
+            <span class="word"><span class="first">W</span>eb</span>
+            <span class="word"><span class="first">H</span>osting</span>
+            <span class="word"><span class="first">M</span>inus</span>
+            <span class="word"><span class="first">C</span>ostly</span>
+            <span class="word"><span class="first">S</span>ubscriptions.</span>
+          </div>
+          <p class="thanks">Nothing due.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="features" id="features">
+      <div class="wrap grid">
+        <article>
+          <h2>Billing &amp; invoicing</h2>
+          <p>Customers, orders, invoices and subscriptions in one place, instead of five tabs and a spreadsheet.</p>
+        </article>
+        <article>
+          <h2>Automated provisioning</h2>
+          <p>An order comes in, the service gets set up. Nobody has to click through it at 2 a.m.</p>
+        </article>
+        <article>
+          <h2>Self-hosted</h2>
+          <p>It runs on your server. Your data stays there, and the price can't change on you.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="manifesto">
+      <div class="wrap inner">
+        <h2>Less license overhead. More control.</h2>
+        <p>We got tired of paying every month to send our own invoices, so we're building the thing ourselves. It's open source: read the code, fix it, or complain about it in public.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <a class="footer-brand" href="#">webnoobs</a>
+      <span class="disclaimer">Not affiliated with WebPros. Obviously.</span>
+      <div class="footer-links">
+        <a href="#features">What it does</a>
+        <a href="https://github.com/webnoobspanel">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
